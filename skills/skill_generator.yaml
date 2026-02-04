@@ -1,0 +1,67 @@
+name: skill_generator
+description: 根据用户操作自动生成可复用的Skill配置
+version: 1.0.0
+author: Web Excel Team
+
+tools:
+  - name: capture_workflow
+    description: 捕获用户的操作序列
+    module: builtin
+    function: capture_workflow
+    parameters:
+      - name: actions
+        type: array
+        required: true
+        description: 用户执行的操作列表
+
+  - name: generate_skill_yaml
+    description: 根据捕获的操作生成Skill YAML配置
+    module: builtin
+    function: generate_skill_yaml
+    parameters:
+      - name: workflow_name
+        type: string
+        required: true
+        description: Skill名称
+      - name: actions
+        type: array
+        required: true
+        description: 操作序列
+      - name: description
+        type: string
+        required: false
+        description: Skill描述
+
+  - name: save_user_skill
+    description: 保存用户自定义Skill到文件
+    module: builtin
+    function: save_user_skill
+    parameters:
+      - name: skill_name
+        type: string
+        required: true
+        description: Skill文件名
+      - name: skill_config
+        type: object
+        required: true
+        description: Skill配置对象
+
+examples:
+  workflow_example:
+    name: "抓取财务数据并生成报表"
+    description: "从公司内网抓取财务表格并生成可视化报表"
+    steps:
+      1. scrape_web_table(url="https://internal.company.com/finance")
+      2. create_excel_workbook(sheets_data=[...])
+      3. create_chart_from_excel_sheet(sheet_data=[...], chart_type="bar")
+
+output_template: |
+  name: {workflow_name}
+  description: {description}
+  version: 1.0.0
+  tools:
+    {tools_list}
+  workflows:
+    - name: {workflow_name}
+      steps:
+        {steps_list}

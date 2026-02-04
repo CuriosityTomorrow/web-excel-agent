@@ -1,0 +1,64 @@
+name: data_scraper
+description: 网页数据抓取专家，专门从静态HTML页面提取结构化数据
+version: 1.0.0
+author: Web Excel Team
+
+tools:
+  - name: scrape_web_table
+    description: 抓取网页中的HTML表格
+    module: mcp_tools.scraper_tools
+    function: scrape_web_table
+    parameters:
+      - name: url
+        type: string
+        required: true
+        description: 目标网页URL
+      - name: table_index
+        type: integer
+        required: false
+        default: 0
+        description: 要抓取的表格索引
+
+  - name: scrape_web_list
+    description: 抓取网页中的有序或无序列表
+    module: mcp_tools.scraper_tools
+    function: scrape_web_list
+    parameters:
+      - name: url
+        type: string
+        required: true
+        description: 目标网页URL
+      - name: list_index
+        type: integer
+        required: false
+        default: 0
+        description: 要抓取的列表索引
+
+  - name: extract_structured_data
+    description: 使用CSS选择器提取特定元素
+    module: mcp_tools.scraper_tools
+    function: extract_structured_data
+    parameters:
+      - name: url
+        type: string
+        required: true
+        description: 目标网页URL
+      - name: selector
+        type: string
+        required: false
+        description: CSS选择器表达式
+
+examples:
+  - input: "帮我抓取 https://example.com 的第一个表格"
+    actions:
+      - tool: scrape_web_table
+        params:
+          url: "https://example.com"
+          table_index: 0
+
+  - input: "提取页面上所有的文章标题"
+    actions:
+      - tool: extract_structured_data
+        params:
+          url: "https://example.com"
+          selector: "h2.title"

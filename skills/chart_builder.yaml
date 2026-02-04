@@ -1,0 +1,90 @@
+name: chart_builder
+description: Excel数据可视化专家，创建各种类型的图表
+version: 1.0.0
+author: Web Excel Team
+
+tools:
+  - name: create_chart
+    description: 从数据创建图表配置
+    module: mcp_tools.chart_tools
+    function: create_chart
+    parameters:
+      - name: chart_type
+        type: string
+        required: true
+        enum: [bar, line, pie]
+        description: 图表类型
+      - name: data
+        type: array
+        required: true
+        description: 图表数据
+      - name: title
+        type: string
+        required: false
+        description: 图表标题
+      - name: columns
+        type: array
+        required: false
+        description: 要显示的列
+
+  - name: create_chart_from_excel_sheet
+    description: 直接从Excel表格数据创建图表
+    module: mcp_tools.chart_tools
+    function: create_chart_from_excel_sheet
+    parameters:
+      - name: sheet_data
+        type: array
+        required: true
+        description: Excel工作表数据（二维数组）
+      - name: chart_type
+        type: string
+        required: false
+        default: bar
+        enum: [bar, line, pie]
+        description: 图表类型
+
+  - name: update_chart_data
+    description: 更新已有图表的数据
+    module: mcp_tools.chart_tools
+    function: update_chart_data
+    parameters:
+      - name: chart_id
+        type: string
+        required: true
+        description: 图表ID
+      - name: new_data
+        type: array
+        required: true
+        description: 新的图表数据
+
+  - name: export_chart
+    description: 导出图表为图片文件
+    module: mcp_tools.chart_tools
+    function: export_chart
+    parameters:
+      - name: chart_config
+        type: object
+        required: true
+        description: 图表配置
+      - name: format
+        type: string
+        required: false
+        default: png
+        enum: [png, svg, pdf]
+        description: 导出格式
+
+examples:
+  - input: "创建一个柱状图显示销售数据"
+    actions:
+      - tool: create_chart
+        params:
+          chart_type: "bar"
+          data: [{"name": "一月", "value": 100}, {"name": "二月", "value": 150}]
+          title: "销售数据"
+
+  - input: "根据当前Excel数据创建折线图"
+    actions:
+      - tool: create_chart_from_excel_sheet
+        params:
+          sheet_data: [["月份", "销售额"], ["一月", 100], ["二月", 150]]
+          chart_type: "line"

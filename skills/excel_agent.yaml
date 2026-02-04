@@ -1,0 +1,91 @@
+name: excel_agent
+description: 从网页抓取数据并生成Excel的AI Agent
+version: 1.0.0
+author: Web Excel Team
+
+tools:
+  - name: scrape_web_table
+    description: 从网页抓取表格数据
+    module: mcp_tools.scraper_tools
+    function: scrape_web_table
+    parameters:
+      - name: url
+        type: string
+        required: true
+        description: 要抓取的网页URL
+      - name: table_index
+        type: integer
+        required: false
+        default: 0
+        description: 表格索引（默认第一个表格）
+
+  - name: create_excel_workbook
+    description: 创建Excel工作簿
+    module: mcp_tools.excel_tools
+    function: create_excel_workbook
+    parameters:
+      - name: sheets_data
+        type: array
+        required: true
+        description: 工作表数据
+
+  - name: update_cell
+    description: 更新单元格数据
+    module: mcp_tools.excel_tools
+    function: update_cell
+    parameters:
+      - name: workbook_id
+        type: string
+        required: true
+      - name: sheet_index
+        type: integer
+        required: true
+      - name: row
+        type: integer
+        required: true
+      - name: col
+        type: integer
+        required: true
+      - name: value
+        type: string
+        required: true
+
+  - name: create_chart
+    description: 创建图表
+    module: mcp_tools.chart_tools
+    function: create_chart
+    parameters:
+      - name: chart_type
+        type: string
+        required: true
+        enum: [bar, line, pie]
+      - name: data
+        type: array
+        required: true
+      - name: title
+        type: string
+        required: false
+
+  - name: export_excel_file
+    description: 导出Excel文件
+    module: mcp_tools.excel_tools
+    function: export_excel_file
+    parameters:
+      - name: workbook_id
+        type: string
+        required: true
+
+workflows:
+  - name: scrape_and_create_excel
+    description: 从网页抓取数据并创建Excel
+    steps:
+      1. 使用 scrape_web_table 抓取网页表格
+      2. 使用 create_excel_workbook 创建工作簿
+      3. 返回工作簿ID
+
+  - name: create_chart_from_data
+    description: 从Excel数据创建图表
+    steps:
+      1. 读取Excel数据
+      2. 使用 create_chart_from_excel_sheet 创建图表
+      3. 返回图表配置
